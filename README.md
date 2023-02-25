@@ -1,5 +1,4 @@
 # ColapsingToolbar
 Compose Telegram Like Collapsing Toolbar
 
-<img src="https://user-images.githubusercontent.com/10692245/221384203-549f65aa-70d6-44ae-a325-f000754577a8.gif" width="300" height="600"/>
-
+<img src="https://user-images.githubusercontent.com/10692245/221384384-60349670-d846-48b8-b4b5-232ddbc7e2f2.gif" width="300" height="600"/>
