@@ -180,7 +180,7 @@ fun Header(progress: Float) {
                 .conditionalFillMaxSize(!isScaleBelowThreshold, fraction = animate.value)
                 .background(
                     Color.Red,
-                    shape = if (isScaleBelowThreshold) CircleShape else RoundedCornerShape(100.dp * (1 - animate.value))
+                    shape = if (isScaleBelowThreshold) CircleShape else RoundedCornerShape(150.dp * (1 - animate.value))
                 ),
             imageVector = Icons.Default.Person,
             contentDescription = ""
@@ -191,4 +191,4 @@ fun Header(progress: Float) {
 }
 
 fun Modifier.conditionalFillMaxSize(fill: Boolean, fraction: Float) =
-    run { if (fill) fillMaxSize(fraction) else if (fraction > 0.2f) fillMaxSize(fraction) else this  }
+    run { if (fill) fillMaxSize(fraction) else if (fraction > 0.1f) fillMaxSize(fraction).aspectRatio(1f) else this  }
