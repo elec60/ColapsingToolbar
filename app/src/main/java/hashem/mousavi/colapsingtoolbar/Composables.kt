@@ -1,5 +1,6 @@
 package hashem.mousavi.colapsingtoolbar
 
+import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,7 +31,6 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.zIndex
-import kotlin.math.roundToInt
 
 private val minHeaderHeight = 56.dp
 private val maxHeaderHeight = 300.dp
@@ -49,14 +49,17 @@ fun CollapsingToolbar(modifier: Modifier) {
 
     val diffPx = with(density) { (maxHeaderHeight - minHeaderHeight).roundToPx() }
 
-    remember { derivedStateOf { state.layoutInfo } }.value.visibleItemsInfo.forEach {
-        if (it.index == 0) {
-            progress =
-                (1 + it.offset / diffPx.toFloat()).coerceIn(0f, 1f)
-        } else if (state.firstVisibleItemIndex > 0) {
-            progress = 0f
-        }
-    }
+   progress = remember {
+       derivedStateOf {
+           var p = 0f
+           state.layoutInfo.visibleItemsInfo.forEach {
+               if (it.index == 0) {
+                   p = (1 + it.offset / diffPx.toFloat()).coerceIn(0f, 1f)
+               }
+           }
+           p
+       }
+   }.value
 
     //offset = -diff -> progress = 0
     //offset = 0 -> progress = 1
@@ -92,12 +95,8 @@ fun CollapsingToolbar(modifier: Modifier) {
 
 @Composable
 fun Header(progress: Float) {
-    //p = 0 -> min
-    //p = 1 -> max
-    //h - max = (max - min)*(p - 1)
-    //=> h = max + (max - min)*(p - 1)
     val density = LocalDensity.current
-    val height = maxHeaderHeight + (maxHeaderHeight - minHeaderHeight) * (progress - 1)
+    val height = lerp(start = minHeaderHeight, stop = maxHeaderHeight, fraction = progress)
     val minHeaderHeightPx = with(density) { minHeaderHeight.toPx() }
 
     var backButtonPosition by remember {
@@ -191,4 +190,8 @@ fun Header(progress: Float) {
 }
 
 fun Modifier.conditionalFillMaxSize(fill: Boolean, fraction: Float) =
-    run { if (fill) fillMaxSize(fraction) else if (fraction > 0.1f) fillMaxSize(fraction).aspectRatio(1f) else this  }
+    run {
+        if (fill) fillMaxSize(fraction) else if (fraction > 0.1f) fillMaxSize(fraction).aspectRatio(
+            1f
+        ) else this
+    }
